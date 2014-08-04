@@ -9,9 +9,10 @@
         <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
         <script>
         // creating a new websocket
-        var socket = io.connect('https://sibling-chicken-leg-c9-manfred_ackermann.c9.io');
+        var socket = io.connect('http://sibling-chicken-leg-c9-manfred_ackermann.c9.io');
         // on every message recived we print the new datas inside the #container div
         socket.on('notification', function (data) {
+            //console.log("Notification received.");
             // convert the json string into a valid javascript object
             var _data = JSON.parse(data);
             $('#container').html(_data.test.sample);

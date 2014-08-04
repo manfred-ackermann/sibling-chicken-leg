@@ -1,29 +1,14 @@
-var app     = require('http').createServer(handler),
-    io      = require('socket.io').listen(app),
-    parser  = new require('xml2json'),
-    fs      = require('fs');
+var app     = require('express')();
+var server  = require('http').Server(app);
+var io      = require('socket.io')(server);
+var fs      = require('fs');
+var parser  = new require('xml2json');
 
-// creating the server ( localhost:8000 )
-app.listen(process.env.PORT, process.env.IP)
-
-console.log("Server started at: http://"+process.env.IP+":"+process.env.PORT)
-
-// on server started we can load our client.html page
-function handler(req, res) {
-  fs.readFile(__dirname + '/app.html', function(err, data) {
-    if (err) {
-      console.log(err);
-      res.writeHead(500);
-      return res.end('Error loading app.html');
-    }
-    res.writeHead(200);
-    res.end(data);
-  });
-}
+server.listen(process.env.PORT, process.env.IP);
 
 // creating a new websocket to keep the content updated without any AJAX request
-io.sockets.on('connection', function(socket) {
-  console.log(__dirname);
+io.on('connection', function(socket) {
+  console.log("Got connection for: "+ __dirname);
   // watching the xml file
   fs.watch(__dirname + '/data.xml', function(curr, prev) {
     // on file change we can read the new xml
@@ -35,6 +20,27 @@ io.sockets.on('connection', function(socket) {
       json.time = new Date();
       // send the new data to the client
       socket.volatile.emit('notification', json);
+      console.log("Notification send.");
     });
   });
 });
+
+app.get('/hello.txt', function(req, res){
+  res.send('Hello World');
+});
+
+// on server started we can load our client.html page
+app.get('/', function (req, res) {
+  console.log("Got request for: /");
+  fs.readFile(__dirname + '/app.html', function(err, data) {
+    if (err) {
+      console.log(err);
+      res.writeHead(500);
+      return res.end('Error loading app.html');
+    }
+    res.writeHead(200);
+    res.end(data);
+  });
+});
+
+console.log("Server started at: http://sibling-chicken-leg-c9-manfred_ackermann.c9.io");
