@@ -1,0 +1,33 @@
+{
+  "name": "sibling-chicken-leg",
+  "version": "0.0.1",
+  "description": "node.js realtime network monitor",
+  "keywords": [
+    "realtime",
+    "network",
+    "monitor",
+    "neo4j",
+    "d3",
+    "socket",
+    "io"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/manfred_ackermann/sibling-chicken-leg"
+  },
+  "contributors": [
+    {
+      "name": "Manfred Ackermann",
+      "email": "manfred.ackermann@gmail.com"
+    }
+  ],
+  "dependencies": {
+    "async": "^0.9.0",
+    "d3": "^3.4.11",
+    "express": "^4.7.3",
+    "neo4js": "0.0.4",
+    "node-neo4j": "^2.0.0-RC6",
+    "socket.io": "^1.0.6",
+    "xml2json": "^0.4.0"
+  }
+}
