@@ -6,13 +6,15 @@ var app     = require('http').createServer(handler),
 // creating the server ( localhost:8000 )
 app.listen(process.env.PORT, process.env.IP)
 
+console.log("Server started at: http://"+process.env.IP+":"+process.env.PORT)
+
 // on server started we can load our client.html page
 function handler(req, res) {
   fs.readFile(__dirname + '/app.html', function(err, data) {
     if (err) {
       console.log(err);
       res.writeHead(500);
-      return res.end('Error loading client.html');
+      return res.end('Error loading app.html');
     }
     res.writeHead(200);
     res.end(data);
