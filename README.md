@@ -15,6 +15,6 @@ On the node.js side the following extensions are identified to do the job:
 - GitHub neo-technology/neo4js (Neo4j REST client for JavaScript)
 - GitHub mbostock/d3 (A JavaScript visualization library for HTML and SVG)
 - GitHub expressjs/morgan (http request logger middleware)
-- GitHub visionmedia/jade robust, elegant, feature rich template engine)
+- GitHub visionmedia/jade (robust, elegant, feature rich template engine)
 
 That's it ... let's see how far it get's.
