@@ -2,13 +2,14 @@ var app     = require('express')();
 var server  = require('http').Server(app);
 var io      = require('socket.io')(server);
 var fs      = require('fs');
+var morgan  = require('morgan');
 var parser  = new require('xml2json');
 
 server.listen(process.env.PORT, process.env.IP);
 
 // creating a new websocket to keep the content updated without any AJAX request
 io.on('connection', function(socket) {
-  console.log("Got connection for: "+ __dirname);
+  //console.log("Got connection for: "+ __dirname);
   // watching the xml file
   fs.watch(__dirname + '/data.xml', function(curr, prev) {
     // on file change we can read the new xml
@@ -20,10 +21,14 @@ io.on('connection', function(socket) {
       json.time = new Date();
       // send the new data to the client
       socket.volatile.emit('notification', json);
-      console.log("Notification send.");
+      //console.log("Notification send.");
     });
   });
 });
+
+//app.engine('jade', require('jade').__express);  => Jade drin dann gehts nicht!
+//app.engine('html', require('jade').renderFile); <= Scheint zu gehen: CHECKEN!
+app.use(morgan('combined'));
 
 app.get('/hello.txt', function(req, res){
   res.send('Hello World');
@@ -31,7 +36,6 @@ app.get('/hello.txt', function(req, res){
 
 // on server started we can load our client.html page
 app.get('/', function (req, res) {
-  console.log("Got request for: /");
   fs.readFile(__dirname + '/app.html', function(err, data) {
     if (err) {
       console.log(err);
