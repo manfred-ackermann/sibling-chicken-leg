@@ -20,3 +20,10 @@ On the node.js side the following extensions are identified to do the job:
 and last but not least Bootstrap.
 
 That's it ... now let's see how far it get's.
+
+History
+-------
+
+2014.08.05 - Prototype that implements websockets and a static delivered html
+             page that makes use of bootstrap framework. When data.xml is 
+             altered the content on the webpage changes.
