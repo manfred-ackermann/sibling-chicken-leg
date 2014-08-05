@@ -1,4 +1,5 @@
-var app     = require('express')();
+var express = require('express');
+var app     = express();
 var server  = require('http').Server(app);
 var io      = require('socket.io')(server);
 var fs      = require('fs');
@@ -17,11 +18,9 @@ io.on('connection', function(socket) {
       if (err) throw err;
       // parsing the new xml data and converting them into json file
       var json = parser.toJson(data);
-      // adding the time of the last update
-      json.time = new Date();
       // send the new data to the client
-      socket.volatile.emit('notification', json);
-      //console.log("Notification send.");
+      socket.volatile.emit('notification', json); 
+      console.log("Notification send: " + json);
     });
   });
 });
@@ -30,17 +29,37 @@ io.on('connection', function(socket) {
 //app.engine('html', require('jade').renderFile); <= Scheint zu gehen: CHECKEN!
 app.use(morgan('combined'));
 
-app.get('/hello.txt', function(req, res){
-  res.send('Hello World');
-});
-
 // on server started we can load our client.html page
 app.get('/', function (req, res) {
   fs.readFile(__dirname + '/app.html', function(err, data) {
     if (err) {
       console.log(err);
       res.writeHead(500);
+      return res.end('Error loading /');
+    }
+    res.writeHead(200);
+    res.end(data);
+  });
+});
+
+app.get('/app.html', function (req, res) {
+  fs.readFile(__dirname + '/app.html', function(err, data) {
+    if (err) {
+      console.log(err);
+      res.writeHead(500);
       return res.end('Error loading app.html');
+    }
+    res.writeHead(200);
+    res.end(data);
+  });
+});
+
+app.get('/app.css', function (req, res) {
+  fs.readFile(__dirname + '/app.css', function(err, data) {
+    if (err) {
+      console.log(err);
+      res.writeHead(500);
+      return res.end('Error loading app.css');
     }
     res.writeHead(200);
     res.end(data);
