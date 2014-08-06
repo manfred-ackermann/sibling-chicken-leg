@@ -17,7 +17,7 @@ On the node.js side the following extensions are identified to do the job:
 - GitHub expressjs/morgan (http request logger middleware)
 - GitHub visionmedia/jade (robust, elegant, feature rich template engine)
 
-and last but not least Bootstrap.
+and last but not least Bootstrap. IDE I use is http://c9.io
 
 That's it ... now let's see how far it get's.
 
