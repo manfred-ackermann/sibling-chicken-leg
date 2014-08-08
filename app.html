@@ -73,7 +73,8 @@
           <p class="lead">I have to change this to a jade template.</p>
           
           <div class="alert alert-info" role="alert">
-            <p class="" id="container">Try to change <strong>server side xml data</strong> to update this content.</p>
+            <p id="container">Try to change <strong>server side xml data</strong> to update this content.</p>
+            <p id="timestamp"></p>
           </div>
           <p><a href="#login" class="btn btn-primary btn-lg" role="button">Login &raquo;</a></p>
       </div>
@@ -97,7 +98,8 @@
             //console.log("Notification received.");
             // convert the json string into a valid javascript object
             var _data = JSON.parse(data);
-            $('#container').html(_data.test.sample);
+            $('#container').html(_data.app.hello);
+            $('#timestamp').html(_data.app.timestamp);
         });
     </script>
   </body>

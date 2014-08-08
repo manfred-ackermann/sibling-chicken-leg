@@ -4,25 +4,20 @@ var server  = require('http').Server(app);
 var io      = require('socket.io')(server);
 var fs      = require('fs');
 var morgan  = require('morgan');
-var parser  = new require('xml2json');
 
 server.listen(process.env.PORT, process.env.IP);
 
 // creating a new websocket to keep the content updated without any AJAX request
 io.on('connection', function(socket) {
-  //console.log("Got connection for: "+ __dirname);
-  // watching the xml file
-  fs.watch(__dirname + '/data.xml', function(curr, prev) {
-    // on file change we can read the new xml
-    fs.readFile(__dirname + '/data.xml', function(err, data) {
-      if (err) throw err;
-      // parsing the new xml data and converting them into json file
-      var json = parser.toJson(data);
-      // send the new data to the client
-      socket.volatile.emit('notification', json); 
-      console.log("Notification send: " + json);
-    });
-  });
+  console.log("User connection.");
+
+  setInterval(function() {
+    var msg  = JSON.stringify( {app:{ hello:"Hello World!", timestamp:Date.now()} } );
+
+    socket.volatile.emit('notification', msg); 
+    //console.log("Notification send: " + msg);
+  }, 100);
+  
 });
 
 //app.engine('jade', require('jade').__express);  => Jade drin dann gehts nicht!
@@ -54,8 +49,8 @@ app.get('/app.html', function (req, res) {
   });
 });
 
-app.get('/app.css', function (req, res) {
-  fs.readFile(__dirname + '/app.css', function(err, data) {
+app.get('/static/app.css', function (req, res) {
+  fs.readFile(__dirname + '/static/app.css', function(err, data) {
     if (err) {
       console.log(err);
       res.writeHead(500);
