@@ -19,17 +19,25 @@ io.on('connection', function(socket) {
 
   socket.on('disconnect', function(){ console.log('User disconnected'); });
   
-  socket.on('nodes',      function(){ 
-    console.log('Got event: nodes');
-    io.emit('nodesData'); 
+  socket.on('views', function(){ 
+    console.log('Got request: views');
+    socket.emit('views'); 
   });
   
-  socket.on('relations',  function(){ console.log('Got notification: relations'); });
+  socket.on('nodes', function(){ 
+    console.log('Got request: nodes');
+    socket.emit('nodesData'); 
+  });
+  
+  socket.on('relations',  function(){
+    console.log('Got request: relations');
+    socket.emit('relationsData');
+  });
 
-/*  setInterval(function() {
-    var msg  = JSON.stringify( {app:{hello:"Please wait ..."}} );
-    socket.volatile.emit('welcome', msg); 
-  }, 1000); */
+//  setInterval(function() {
+//    var msg  = JSON.stringify( {app:{hello:"Please wait ..."}} );
+//    socket.volatile.emit('welcome', msg); 
+//  }, 1000);
   
 });
 
