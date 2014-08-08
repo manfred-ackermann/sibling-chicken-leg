@@ -5,7 +5,13 @@ var io      = require('socket.io')(server);
 var fs      = require('fs');
 var morgan  = require('morgan');
 
-server.listen(process.env.PORT, process.env.IP);
+var PORT  = '8080';
+var IP    = '127.0.0.1';
+
+if ( process.env.PORT != "" ) PORT = process.env.PORT;
+if ( process.env.IP   != "" ) IP   = process.env.IP;
+
+server.listen(PORT, IP);
 
 // creating a new websocket to keep the content updated without any AJAX request
 io.on('connection', function(socket) {
@@ -61,4 +67,4 @@ app.get('/static/app.css', function (req, res) {
   });
 });
 
-console.log("Server started at: http://sibling-chicken-leg-c9-manfred_ackermann.c9.io");
+console.log("Server started at: http://"+IP+":"+PORT);
