@@ -40,7 +40,7 @@
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home</a></li>
-            <li><a href="#nodes">Nodes</a></li>
+            <li><a href="#nodes" id="nodesButton">Nodes</a></li>
             <li><a href="#relations">Relations</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Views<span class="caret"></span></a>
@@ -73,8 +73,7 @@
           <p class="lead">I have to change this to a jade template.</p>
           
           <div class="alert alert-info" role="alert">
-            <p id="container">Try to change <strong>server side xml data</strong> to update this content.</p>
-            <p id="timestamp"></p>
+            <p id="container">Please select a menu entry...</p>
           </div>
           <p><a href="#login" class="btn btn-primary btn-lg" role="button">Login &raquo;</a></p>
       </div>
@@ -92,14 +91,21 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         // creating a new websocket
-        var socket = io.connect('http://sibling-chicken-leg-c9-manfred_ackermann.c9.io');
-        // on every message recived we print the new datas inside the #container div
-        socket.on('notification', function (data) {
-            //console.log("Notification received.");
-            // convert the json string into a valid javascript object
-            var _data = JSON.parse(data);
-            $('#container').html(_data.app.hello);
-            $('#timestamp').html(_data.app.timestamp);
+        var socket = io.connect();
+
+        $('#nodes'    ).click( function () { socket.emit('nodes'); });
+        $('#relations').click( function () { socket.emit('relations'); });
+        
+        socket.on('nodesData', function () {
+          console.log("Nodes confirmed by server.");
+          $('#container').html("Nodes confirmed by server.");
+        });
+        
+        socket.on('welcome', function (data) {
+          //console.log("Notification received.");
+          // convert the json string into a valid javascript object
+          var _data = JSON.parse(data);
+          $('#container').html(_data.app.hello);
         });
     </script>
   </body>

@@ -9,20 +9,27 @@ var PORT  = '8080';
 var IP    = '127.0.0.1';
 
 if ( process.env.PORT !== "" ) PORT = process.env.PORT;
-if ( process.env.IP   !== "" ) IP   = process.env.IP;
+if ( process.env.IP   !== "" )   IP = process.env.IP;
 
 server.listen(PORT, IP);
 
 // creating a new websocket to keep the content updated without any AJAX request
 io.on('connection', function(socket) {
-  console.log("User connection.");
+  console.log("User connected.");
 
-  setInterval(function() {
-    var msg  = JSON.stringify( {app:{ hello:"Hello World!", timestamp:Date.now()} } );
+  socket.on('disconnect', function(){ console.log('User disconnected'); });
+  
+  socket.on('nodes',      function(){ 
+    console.log('Got event: nodes');
+    io.emit('nodesData'); 
+  });
+  
+  socket.on('relations',  function(){ console.log('Got notification: relations'); });
 
-    socket.volatile.emit('notification', msg); 
-    //console.log("Notification send: " + msg);
-  }, 100);
+/*  setInterval(function() {
+    var msg  = JSON.stringify( {app:{hello:"Please wait ..."}} );
+    socket.volatile.emit('welcome', msg); 
+  }, 1000); */
   
 });
 
@@ -60,11 +67,12 @@ app.get('/static/app.css', function (req, res) {
     if (err) {
       console.log(err);
       res.writeHead(500);
-      return res.end('Error loading app.css');
+      return res.end('Error loading /static/app.css');
     }
     res.writeHead(200);
     res.end(data);
   });
 });
 
-console.log("Server started at: http://"+IP+":"+PORT);
+console.log("Server started at: http://"+IP+":"+PORT+
+                               ", ws://"+IP+":"+PORT+"/socket.io");
