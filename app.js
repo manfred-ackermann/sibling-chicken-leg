@@ -8,8 +8,8 @@ var morgan  = require('morgan');
 var PORT  = '8080';
 var IP    = '127.0.0.1';
 
-if ( process.env.PORT != "" ) PORT = process.env.PORT;
-if ( process.env.IP   != "" ) IP   = process.env.IP;
+if ( process.env.PORT !== "" ) PORT = process.env.PORT;
+if ( process.env.IP   !== "" ) IP   = process.env.IP;
 
 server.listen(PORT, IP);
 
