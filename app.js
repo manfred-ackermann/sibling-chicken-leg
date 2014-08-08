@@ -17,7 +17,14 @@ server.listen(PORT, IP);
 io.on('connection', function(socket) {
   console.log("User connected.");
 
+  socket.emit('home');
+
   socket.on('disconnect', function(){ console.log('User disconnected'); });
+  
+  socket.on('home', function(){ 
+    console.log('Got request: home');
+    socket.emit('home');
+  });
   
   socket.on('views', function(){ 
     console.log('Got request: views');
@@ -34,10 +41,10 @@ io.on('connection', function(socket) {
     socket.emit('relationsData');
   });
 
-//  setInterval(function() {
-//    var msg  = JSON.stringify( {app:{hello:"Please wait ..."}} );
-//    socket.volatile.emit('welcome', msg); 
-//  }, 1000);
+  setTimeout(function() {}, 10);(function() {
+    var msg  = JSON.stringify( {app:{hello:"Please wait ..."}} );
+    socket.volatile.emit('welcome', msg); 
+  }, 500);
   
 });
 
@@ -76,6 +83,18 @@ app.get('/static/app.css', function (req, res) {
       console.log(err);
       res.writeHead(500);
       return res.end('Error loading /static/app.css');
+    }
+    res.writeHead(200);
+    res.end(data);
+  });
+});
+
+app.get('/static/client.js', function (req, res) {
+  fs.readFile(__dirname + '/static/client.js', function(err, data) {
+    if (err) {
+      console.log(err);
+      res.writeHead(500);
+      return res.end('Error loading /static/client.js');
     }
     res.writeHead(200);
     res.end(data);

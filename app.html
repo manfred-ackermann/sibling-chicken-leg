@@ -39,7 +39,7 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
+            <li class="active"><a href="#" id="home">Home</a></li>
             <li><a href="#" id="nodes"    >Nodes</a></li>
             <li><a href="#" id="relations">Relations</a></li>
             <li class="dropdown">
@@ -73,7 +73,7 @@
           <p class="lead">I have to change this to a jade template.</p>
           
           <div class="alert alert-info" role="alert">
-            <p id="container">Please select a menu entry...</p>
+            <p id="container">Connecting ...</p>
           </div>
           <!--p><a href="#login" class="btn btn-primary btn-lg" role="button">Login &raquo;</a></p//-->
       </div>
@@ -87,41 +87,7 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-
     <script src="/socket.io/socket.io.js"></script>
-    <script>
-        // creating a new websocket
-        var socket = io.connect();
-
-        // Send and log id of every link clicked
-        $('a').click( function (event) { 
-          socket.emit(event.target.id) 
-          console.log("Requested: "+event.target.id);
-        });
-        
-        // React on server message
-        socket.on('views', function () {
-          $('#container').html("Select a view please.");
-        });
-
-        // React on server message
-        socket.on('nodesData', function () {
-          console.log("Nodes confirmed by server.");
-          $('#container').html("Nodes confirmed by server.");
-        });
-        
-        // React on server message
-        socket.on('relationsData', function () {
-          console.log("Relations confirmed by server.");
-          $('#container').html("Relations confirmed by server.");
-        });
-        
-//        socket.on('welcome', function (data) {
-//          //console.log("Notification received.");
-//          // convert the json string into a valid javascript object
-//          var _data = JSON.parse(data);
-//          $('#container').html(_data.app.hello);
-//        });
-    </script>
+    <script src="/static/client.js"></script>
   </body>
 </html>
