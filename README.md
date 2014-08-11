@@ -23,12 +23,14 @@ That's it ... now let's see how far it get's.
 
 History
 -------
+
 2014.08.10 - I'm quite fine with the Bootstrap and Websockets integration and
              now going on with connection to Neo4j, requesting data and getting
-             it to the client. Afterwords I'll go for the visualistion (d3). I
+             it to the client. After that I'll go for the visualistion (d3). I
              thing jade will not be of a big help because all data will be 
              rendered by d3, but who knows. At least I remember jade was a cool
              help on more text oriented content.
+             
 2014.08.05 - Prototype that implements websockets and a static delivered html
              page that makes use of bootstrap framework. When data.xml is 
              altered the content on the webpage changes.
