@@ -54,11 +54,10 @@ io.on('connection', function(socket) {
           console.log(err);
           console.log(err.stack);
         } else {
-          console.log(JSON.stringify(results, null, 5 ));
-          socket.emit('nodesData'); 
+          console.log(JSON.stringify(results, null, 1 ));
+          socket.emit('nodesData',results); 
         }
       });
-      // do something with the graph
     });
     
 
