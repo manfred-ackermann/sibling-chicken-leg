@@ -27,6 +27,7 @@
     "express": "^4.7.3",
     "jade": "^1.5.0",
     "morgan": "^1.2.2",
+    "neo4j-js": "0.0.8",
     "neo4js": "0.0.4",
     "node-neo4j": "^2.0.0-RC6",
     "socket.io": "^1.0.6",

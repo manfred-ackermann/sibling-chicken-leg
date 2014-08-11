@@ -4,12 +4,16 @@ var server  = require('http').Server(app);
 var io      = require('socket.io')(server);
 var fs      = require('fs');
 var morgan  = require('morgan');
+var neo4j   = require('neo4j-js');
 
 var PORT  = '8080';
 var IP    = '127.0.0.1';
+var DB    = 'http://localhost:7474';
+
 
 if ( process.env.PORT !== "" ) PORT = process.env.PORT;
 if ( process.env.IP   !== "" )   IP = process.env.IP;
+if ( process.env.DB   !== "" )   DB = process.env.DB;
 
 server.listen(PORT, IP);
 
@@ -33,7 +37,34 @@ io.on('connection', function(socket) {
   
   socket.on('nodes', function(){ 
     console.log('Got request: nodes');
-    socket.emit('nodesData'); 
+
+    neo4j.connect(DB, function (err, graph) {
+      if (err)
+          throw err;
+      console.log('Connected to DB: '+DB);
+  
+      var query = [
+        'MATCH (n)',
+        'WHERE n.name="vhead0"',
+        'RETURN n'
+      ];
+  
+      graph.query(query.join('\n'),  function (err, results) {
+        if (err) {
+          console.log(err);
+          console.log(err.stack);
+        } else {
+          console.log(JSON.stringify(results, null, 5 ));
+          socket.emit('nodesData'); 
+        }
+      });
+      // do something with the graph
+    });
+    
+
+//    db.readNodesWithLabel('Router', function(err, result){
+//      socket.emit('nodesData: '+result); 
+//		});
   });
   
   socket.on('relations',  function(){
@@ -41,10 +72,10 @@ io.on('connection', function(socket) {
     socket.emit('relationsData');
   });
 
-  setTimeout(function() {}, 10);(function() {
-    var msg  = JSON.stringify( {app:{hello:"Please wait ..."}} );
-    socket.volatile.emit('welcome', msg); 
-  }, 500);
+//  setTimeout(function() {}, 10);(function() {
+//    var msg  = JSON.stringify( {app:{hello:"Please wait ..."}} );
+//    socket.volatile.emit('welcome', msg); 
+//  }, 500);
   
 });
 
