@@ -20,7 +20,7 @@ socket.on('views', function () {
 // React on server message
 socket.on('nodesData', function (data) {
   console.log("Nodes confirmed by server. Got id:"+data[0].n.id);
-  console.log(JSON.stringify(data, null, 1 ));
+  //console.log(JSON.stringify(data, null, 1 ));
   //var _data = JSON.parse(data);
   //console.log("Got name: "+data[0].n.id);
   $('#container').html("Nodes confirmed by server."+JSON.stringify(data, null, 1 ));

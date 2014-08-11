@@ -8,12 +8,21 @@ var neo4j   = require('neo4j-js');
 
 var PORT  = '8080';
 var IP    = '127.0.0.1';
-var DB    = 'http://localhost:7474';
+var DB    = 'http://localhost:7474/db/data/';
 
 
-if ( process.env.PORT !== "" ) PORT = process.env.PORT;
-if ( process.env.IP   !== "" )   IP = process.env.IP;
-if ( process.env.DB   !== "" )   DB = process.env.DB;
+if ( process.env.PORT !== "" ) { PORT = process.env.PORT;
+} else {
+  console.log("Set environment PORT to set listen port. Default is: "+ PORT);
+}
+if ( process.env.IP   !== "" ) { IP = process.env.IP;
+} else {
+  console.log("Set environment IP to set listen address. Default is: "+ IP);
+}
+if ( process.env.DB   !== "" ) { DB = process.env.DB;
+} else {
+  console.log("Set environment DB to set Neo4j URL. Default is: "+ DB);
+}
 
 server.listen(PORT, IP);
 
@@ -54,7 +63,8 @@ io.on('connection', function(socket) {
           console.log(err);
           console.log(err.stack);
         } else {
-          console.log(JSON.stringify(results, null, 1 ));
+          //console.log(JSON.stringify(results, null, 1 ));
+          console.log("Got result id:"+results[0].n.id);
           socket.emit('nodesData',results); 
         }
       });
