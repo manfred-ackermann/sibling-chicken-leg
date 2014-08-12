@@ -32,6 +32,22 @@ cd sibling-chicken-leg
 npm install 
 ```
 
+## Usage
+
+If you have a default Neo4j Graph DB reacting to http://localhost:7474/db/data/
+installed just start the app and direct your browser to http://127.0.0.1:8080.
+
+```bash
+nodejs app.js
+```
+
+In case you access Neo4j on another host set the environment variable DB to
+point to Neo4j.
+
+```bash
+DB="http://user:pass@neo4j.somewhere.tld:7474/db/data/" nodejs app.js
+```
+
 ## History
 
 2014.08.11 - Requested data from db by cypher and when delivered it to clients
