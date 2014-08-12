@@ -22,7 +22,7 @@ That's it ... now let's see how far it get's.
 
 ## Current Status
 
-> Note: This library is in the early stages of development, is incomplete, and not by any means guaranteed to be stable. If you have input, or are interested in contributing to development or testing, __please contact me!__ My email address is on my [github account](https://github.com/manfred-ackermann).
+> Note: This application is in the early stages of development, is incomplete, and not by any means guaranteed to be stable. If you have input, or are interested in contributing to development or testing, __please contact me!__ My email address is on my [github account](https://github.com/manfred-ackermann).
 
 ## Installation
 

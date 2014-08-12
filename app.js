@@ -54,7 +54,7 @@ io.on('connection', function(socket) {
   
       var query = [
         'MATCH (n)',
-        'WHERE n.name="vhead0"',
+//        'WHERE n.name="vhead0"',
         'RETURN n'
       ];
   
@@ -64,7 +64,8 @@ io.on('connection', function(socket) {
           console.log(err.stack);
         } else {
           //console.log(JSON.stringify(results, null, 1 ));
-          console.log("Got result id:"+results[0].n.id);
+          //console.log("Got result id:"+results[0].n.id);
+          console.log("Got "+results.length+" nodes as results.");
           socket.emit('nodesData',results); 
         }
       });
