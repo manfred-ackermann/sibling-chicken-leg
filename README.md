@@ -13,7 +13,7 @@ On the node.js side the following extensions are identified to do the job:
 - GitHub [caolan/async](//github.com/caolan/async) (Async utilities for node and the browser) **unused atm**
 - GitHub [bretcope/neo4j-js](//github.com/bretcope/neo4j-js) (client library for accessing neo4j databases)
 - GitHub [mbostock/d3](//github.com/mbostock/d3) (A JavaScript visualization library for HTML and SVG)
-- GitHub [expressjs/morgan](//github.com/expressjs/morgan) (http request logger middleware)
+- GitHub [nomiddlename/log4js-node](//github.com/nomiddlename/log4js-node) (log4js logger middleware)
 - GitHub [visionmedia/jade](//github.com/visionmedia/jade) (robust, elegant, feature rich template engine)
 
 and last but not least Bootstrap. The IDE I use is [Cloud9](//c9.io)
