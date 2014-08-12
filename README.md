@@ -22,9 +22,9 @@ That's it ... now let's see how far it get's.
 
 History
 -------
-2014.08.11 - Requested data from db by cypher and when delivered it to clients
-             web frontend by using websockets. Also cleaned up logging a bit.
-             Have to thought about propper logging.
+2014.08.11 - Requested data from db by cypher and when delivered pushing it to 
+             clients web frontend by using websockets. Also cleaned up logging a
+             bit. Have to think about propper logging.
 
 2014.08.10 - I'm quite fine with the Bootstrap and Websockets integration and
              now going on with connection to Neo4j, requesting data and getting
