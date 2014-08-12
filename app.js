@@ -11,7 +11,12 @@ var PORT  = '8080';
 var IP    = '127.0.0.1';
 var DB    = 'http://localhost:7474/db/data/';
 
+// I only wanna see INFO and upwards
+//log.setLevel('DEBUG');
 log.setLevel('INFO');
+//log.setLevel('WARN');
+//log.setLevel('ERROR');
+//log.setLevel('FATAL');
 
 // Look for environment settings
 if ( process.env.PORT !== "" ) { PORT = process.env.PORT;
@@ -29,7 +34,7 @@ if ( process.env.DB   !== "" ) { DB = process.env.DB;
 
 server.listen(PORT, IP);
 
-// creating a new websocket to keep the content updated without any AJAX request
+// creating a new websocket to keep the content updated
 io.on('connection', function(socket) {
   log.debug("User connected.");
 
@@ -51,8 +56,10 @@ io.on('connection', function(socket) {
     log.debug('Got request: nodes');
 
     neo4j.connect(DB, function (err, graph) {
-      if (err)
-          throw err;
+      if (err) {
+        log.fatal(err);
+        throw err;
+      }
       log.debug('Connected to DB: '+DB);
   
       var query = [
@@ -64,11 +71,11 @@ io.on('connection', function(socket) {
       graph.query(query.join('\n'),  function (err, results) {
         if (err) {
           log.error(err);
-          log.error(err.stack);
+          //log.error(err.stack);
         } else {
           //console.log(JSON.stringify(results, null, 1 ));
           //console.log("Got result id:"+results[0].n.id);
-          log.info("Got "+results.length+" nodes as results.");
+          log.info("Got "+results.length+" nodes as results on nodes request.");
           socket.emit('nodesData',results); 
         }
       });
@@ -76,7 +83,7 @@ io.on('connection', function(socket) {
   });
   
   socket.on('relations',  function(){
-    log.info('Got request: relations');
+    log.debug('Got request: relations');
     socket.emit('relationsData');
   });
 
@@ -87,7 +94,10 @@ io.on('connection', function(socket) {
   
 });
 
-app.use(log4js.connectLogger(log4js.getLogger("http"), { level: log4js.levels.INFO, format: ':remote-addr :method :url HTTP/:http-version :status' }));
+app.use(log4js.connectLogger( log4js.getLogger("http"), { 
+  level: log4js.levels.INFO,
+  format: ':remote-addr :method :url HTTP/:http-version :status' 
+}));
 
 // on server started we can load our client.html page
 app.get('/', function (req, res) {
