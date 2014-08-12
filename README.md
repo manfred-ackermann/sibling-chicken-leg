@@ -1,5 +1,5 @@
-sibling-chicken-leg
-===================
+# sibling-chicken-leg
+
 
 Just another try to setup a senseful working environment to build a system that
 has a Neo4j Graph Database as data sink and node.js as middleware to interface
@@ -20,11 +20,41 @@ and last but not least Bootstrap. IDE I use is http://c9.io
 
 That's it ... now let's see how far it get's.
 
+## Current Status
+
+> Note: This library is in the early stages of development, is incomplete, and not by any means guaranteed to be stable. If you have input, or are interested in contributing to development or testing, __please contact me!__ My email address is on my [github account](https://github.com/manfred-ackermann).
+
+## Installation
+
+```bash
+git clone https://github.com/manfred-ackermann/sibling-chicken-leg.git
+cd sibling-chicken-leg
+npm install 
+```
+
+## Usage
+
+If you have a default Neo4j Graph DB reacting to http://localhost:7474/db/data/
+installed just start the app and direct your browser to http://127.0.0.1:8080.
+
+```bash
+nodejs app.js
+```
+
+In case you access Neo4j on another host set the environment variable DB to
+point to Neo4j.
+
+```bash
+DB="http://user:pass@neo4j.somewhere.tld:7474/db/data/" nodejs app.js
+```
+
+## History
+
 History
 -------
-2014.08.11 - Requested data from db by cypher and when delivered pushing it to 
-             clients web frontend by using websockets. Also cleaned up logging a
-             bit. Have to think about propper logging.
+2014.08.11 - Requested data from db by cypher and when delivered it to clients
+             web frontend by using websockets. Also cleaned up logging a bit.
+             Have to thought about propper logging.
 
 2014.08.10 - I'm quite fine with the Bootstrap and Websockets integration and
              now going on with connection to Neo4j, requesting data and getting
