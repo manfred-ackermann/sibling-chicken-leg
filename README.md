@@ -9,7 +9,7 @@ with humans using a html-interface to
 it's helpful to identify problems and their source*
  
 On the node.js side the following extensions are identified to do the job:
-- GitHub strongloop/express (Web Development Framework)
+- GitHub [strongloop/express](/strongloop/express) (Web Development Framework)
 - GitHub caolan/async (Async utilities for node and the browser)
 - GitHub bretcope/neo4j-js (client library for accessing neo4j databases)
 - GitHub mbostock/d3 (A JavaScript visualization library for HTML and SVG)
