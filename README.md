@@ -10,7 +10,7 @@ it's helpful to identify problems and their source*
  
 On the node.js side the following extensions are identified to do the job:
 - GitHub [strongloop/express](//github.com/strongloop/express) (Web Development Framework)
-- GitHub [caolan/async](//github.com/caolan/async) (Async utilities for node and the browser)
+- GitHub [caolan/async](//github.com/caolan/async) (Async utilities for node and the browser) **unused atm**
 - GitHub [bretcope/neo4j-js](//github.com/bretcope/neo4j-js) (client library for accessing neo4j databases)
 - GitHub [mbostock/d3](//github.com/mbostock/d3) (A JavaScript visualization library for HTML and SVG)
 - GitHub [expressjs/morgan](//github.com/expressjs/morgan) (http request logger middleware)
