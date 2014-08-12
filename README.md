@@ -1,5 +1,5 @@
-sibling-chicken-leg
-===================
+# sibling-chicken-leg
+
 
 Just another try to setup a senseful working environment to build a system that
 has a Neo4j Graph Database as data sink and node.js as middleware to interface
@@ -20,8 +20,20 @@ and last but not least Bootstrap. IDE I use is http://c9.io
 
 That's it ... now let's see how far it get's.
 
-History
--------
+## Current Status
+
+> Note: This library is in the early stages of development, is incomplete, and not by any means guaranteed to be stable. If you have input, or are interested in contributing to development or testing, __please contact me!__ My email address is on my [github account](https://github.com/manfred-ackermann).
+
+## Installation
+
+```bash
+git clone https://github.com/manfred-ackermann/sibling-chicken-leg.git
+cd sibling-chicken-leg
+npm install 
+```
+
+## History
+
 2014.08.11 - Requested data from db by cypher and when delivered it to clients
              web frontend by using websockets. Also cleaned up logging a bit.
              Have to thought about propper logging.
