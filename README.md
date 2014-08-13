@@ -51,8 +51,6 @@ DB="http://user:pass@neo4j.somewhere.tld:7474/db/data/" nodejs app.js
 
 ## History
 
-History
--------
 2014.08.11 - Requested data from db by cypher and when delivered it to clients
              web frontend by using websockets. Also cleaned up logging a bit.
              Have to thought about propper logging.
