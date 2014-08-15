@@ -12,7 +12,8 @@ var tpl = {
    */
   VIEW_NETWORK_HAMBURG: function () {
     return join2str( [
-      '#chart'
+      '#row.row: #col-md-12.col-md-12: #panel-body.panel-body',
+      ' #chart.chart'
   ]);},
   
   /* Table of nodes with details
@@ -51,7 +52,7 @@ var tpl = {
   HOME: function () {
     return join2str( [
       'p: em Network and Application Monitor and Analysis',
-      'div(class=["col-md-12"])',
+      '#col-md-12.col-md-12',
       ' p Please select a menu entry to get a list of Nodes or Relations or '+
          'select a view from the dropdown menu to get a graph.',
       ' p BTW: Only "Nodes" and "View//Network/Hamburg" react with data.',

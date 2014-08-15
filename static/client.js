@@ -30,11 +30,12 @@ socket.on('views', function () {
 socket.on('viewNetworkHamburg', function () {
   console.log("Got viewNetworkHamburg response from server.");
   $('#alert').html("Network Hamburg - Last update: "+String(new Date()));
-  $('#container').html( '<div id="chart"></div>' );
+  $('#container').html( jade.render( tpl.VIEW_NETWORK_HAMBURG() ) );
   
   var root = d3.select('#chart').append('svg')
-      .attr('width', 200)
-      .attr('height', 200)
+      .attr('width',  '100%')
+      //.attr('height', '100%')
+      .attr('height', 600)
       .style('border', '1px solid black');
 });
 
