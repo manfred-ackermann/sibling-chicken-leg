@@ -7,27 +7,27 @@ var neo4j   = require('neo4j-js');
 var log4js  = require('log4js');
 var log     = log4js.getLogger('appl');
 
+// Defaults (can be overwriten bei environment vars)
 var PORT  = '8080';
 var IP    = '127.0.0.1';
 var DB    = 'http://localhost:7474/db/data/';
 
 // I only wanna see INFO and upwards
-//log.setLevel('DEBUG');
 log.setLevel(log4js.levels.INFO);
-//log.setLevel('WARN');
-//log.setLevel('ERROR');
-//log.setLevel('FATAL');
 
 // Look for environment settings
-if ( process.env.PORT !== "" ) { PORT = process.env.PORT;
+if ( process.env.PORT !== "" ) {
+  PORT = process.env.PORT; log.info("Set app to listen on PORT: "+ PORT);
 } else {
   log.info("Set environment PORT to set listen port. Default is: "+ PORT);
 }
-if ( process.env.IP   !== "" ) { IP = process.env.IP;
+if ( process.env.IP   !== "" ) {
+  IP = process.env.IP; log.info("Set app to listen on IP: "+ IP);
 } else {
   log.info("Set environment IP to set listen address. Default is: "+ IP);
 }
-if ( process.env.DB   !== "" ) { DB = process.env.DB;
+if ( process.env.DB   !== "" ) { 
+  DB = process.env.DB; log.info("Set app to use DB: "+ DB);
 } else {
   log.info("Set environment DB to set Neo4j URL. Default is: "+ DB);
 }
@@ -35,7 +35,7 @@ if ( process.env.DB   !== "" ) { DB = process.env.DB;
 server.listen(PORT, IP);
 
 /******************************************************************************
- * WEBSOCKETS Message Handling 
+ * WEBSOCKETS Message Handling
  ******************************************************************************/
 
 // creating a new websocket to keep the content updated
@@ -58,14 +58,14 @@ io.on('connection', function(socket) {
   
   /**
    * Got a nodes request
-   * 
+   *
    * Get the data and send it back to client
    **/
   socket.on('nodes', function(){ 
     // Just a debug message
     log.debug('Got request: nodes');
 
-    // ASYNC connect DB 
+    // ASYNC connect DB
     neo4j.connect(DB, function (err, graph) {
       if (err) {
         // Sonething went wrong
@@ -101,7 +101,7 @@ io.on('connection', function(socket) {
   
   /**
    * Got a relations request
-   * 
+   *
    * Send confirmation back to client
    **/
   socket.on('relations',  function(){
@@ -111,7 +111,7 @@ io.on('connection', function(socket) {
 
   /**
    * Do something regulary
-   * 
+   *
    * Send whatever to client
    **/
 //  setTimeout(function() {}, 10);(function() {
@@ -131,54 +131,8 @@ app.use(log4js.connectLogger( log4js.getLogger("http"), {
   format: ':remote-addr :method :url HTTP/:http-version :status' 
 }));
 
-// on server started we can load our client.html page
-app.get('/', function (req, res) {
-  fs.readFile(__dirname + '/app.html', function(err, data) {
-    if (err) {
-      log.error(err);
-      res.writeHead(500);
-      return res.end('Error loading /');
-    }
-    res.writeHead(200);
-    res.end(data);
-  });
-});
-
-app.get('/app.html', function (req, res) {
-  fs.readFile(__dirname + '/app.html', function(err, data) {
-    if (err) {
-      log.error(err);
-      res.writeHead(500);
-      return res.end('Error loading app.html');
-    }
-    res.writeHead(200);
-    res.end(data);
-  });
-});
-
-app.get('/static/app.css', function (req, res) {
-  fs.readFile(__dirname + '/static/app.css', function(err, data) {
-    if (err) {
-      log.error(err);
-      res.writeHead(500);
-      return res.end('Error loading /static/app.css');
-    }
-    res.writeHead(200);
-    res.end(data);
-  });
-});
-
-app.get('/static/client.js', function (req, res) {
-  fs.readFile(__dirname + '/static/client.js', function(err, data) {
-    if (err) {
-      log.error(err);
-      res.writeHead(500);
-      return res.end('Error loading /static/client.js');
-    }
-    res.writeHead(200);
-    res.end(data);
-  });
-});
+app.use("/static", express.static(__dirname + '/static'));
+app.get('/', function (req, res) { res.redirect('/static/app.html')});
 
 /******************************************************************************
  * Done ... Show startup messsage
