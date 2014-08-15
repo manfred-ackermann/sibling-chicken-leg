@@ -6,7 +6,7 @@ var fs      = require('fs');
 var neo4j   = require('neo4j-js');
 var log4js  = require('log4js');
 var log     = log4js.getLogger('appl');
-var queries = require('./static/snippets_queries');
+var queries = require('./static/queries');
 
 // Defaults (can be overwriten bei environment vars)
 var PORT  = '8080';
@@ -63,38 +63,18 @@ io.on('connection', function(socket) {
    * Get the data and send it back to client
    **/
   socket.on('nodes', function(){ 
-    // Just a debug message
-    log.debug('Got request: nodes');
-
-    // ASYNC connect DB
-    neo4j.connect(DB, function (err, graph) {
-      if (err) {
-        // Sonething went wrong
-        log.fatal(err);
-        throw err;
+    log.debug('Got request: nodes');                     // Just a debug message
+    neo4j.connect(DB, function (err, graph) {                // ASYNC connect DB
+      if (err) { log.fatal(err); throw err;              // Something went wrong
       }
-      // Just a debug message
-      log.debug('Connected to DB: '+DB);
-  
-      // Build the query
-      var query = [
-        'MATCH (n)',
-//        'WHERE n.name="vhead0"',
-        'RETURN n'
-      ];
-  
-      // ASYNC do the query
-      graph.query(queries.all_nodes,  function (err, results) {
-        if (err) {
-          // Sonething went wrong
-          log.error(err);
-          //log.error(err.stack);
+      log.debug('Connected to DB: '+DB);                 // Just a debug message
+      graph.query(queries.all_nodes, function (err, res) { // ASYNC do the query
+        if (err) { log.error(err);                       // Something went wrong
         } else {
           //console.log(JSON.stringify(results, null, 1 ));
           //console.log("Got result id:"+results[0].n.id);
-          log.info("Got "+results.length+" nodes as results on nodes request.");
-          // Send the data back to client
-          socket.emit('nodesData',results); 
+          log.info("Got "+res.length+" nodes as results on nodes request.");
+          socket.emit('nodesData',res);          // Send the data back to client
         }
       });
     });
