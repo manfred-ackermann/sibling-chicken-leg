@@ -13,7 +13,7 @@ var DB    = 'http://localhost:7474/db/data/';
 
 // I only wanna see INFO and upwards
 //log.setLevel('DEBUG');
-log.setLevel('INFO');
+log.setLevel(log4js.levels.INFO);
 //log.setLevel('WARN');
 //log.setLevel('ERROR');
 //log.setLevel('FATAL');
@@ -34,6 +34,10 @@ if ( process.env.DB   !== "" ) { DB = process.env.DB;
 
 server.listen(PORT, IP);
 
+/******************************************************************************
+ * WEBSOCKETS Message Handling 
+ ******************************************************************************/
+
 // creating a new websocket to keep the content updated
 io.on('connection', function(socket) {
   log.debug("User connected.");
@@ -52,41 +56,64 @@ io.on('connection', function(socket) {
     socket.emit('views'); 
   });
   
+  /**
+   * Got a nodes request
+   * 
+   * Get the data and send it back to client
+   **/
   socket.on('nodes', function(){ 
+    // Just a debug message
     log.debug('Got request: nodes');
 
+    // ASYNC connect DB 
     neo4j.connect(DB, function (err, graph) {
       if (err) {
+        // Sonething went wrong
         log.fatal(err);
         throw err;
       }
+      // Just a debug message
       log.debug('Connected to DB: '+DB);
   
+      // Build the query
       var query = [
         'MATCH (n)',
 //        'WHERE n.name="vhead0"',
         'RETURN n'
       ];
   
+      // ASYNC do the query
       graph.query(query.join('\n'),  function (err, results) {
         if (err) {
+          // Sonething went wrong
           log.error(err);
           //log.error(err.stack);
         } else {
           //console.log(JSON.stringify(results, null, 1 ));
           //console.log("Got result id:"+results[0].n.id);
           log.info("Got "+results.length+" nodes as results on nodes request.");
+          // Send the data back to client
           socket.emit('nodesData',results); 
         }
       });
     });
   });
   
+  /**
+   * Got a relations request
+   * 
+   * Send confirmation back to client
+   **/
   socket.on('relations',  function(){
     log.debug('Got request: relations');
     socket.emit('relationsData');
   });
 
+  /**
+   * Do something regulary
+   * 
+   * Send whatever to client
+   **/
 //  setTimeout(function() {}, 10);(function() {
 //    var msg  = JSON.stringify( {app:{hello:"Please wait ..."}} );
 //    socket.volatile.emit('welcome', msg); 
@@ -94,6 +121,11 @@ io.on('connection', function(socket) {
   
 });
 
+/******************************************************************************
+ * HTTP Request Handling
+ ******************************************************************************/
+
+// Connect Log4js logger to Express
 app.use(log4js.connectLogger( log4js.getLogger("http"), { 
   level: log4js.levels.INFO,
   format: ':remote-addr :method :url HTTP/:http-version :status' 
@@ -147,6 +179,10 @@ app.get('/static/client.js', function (req, res) {
     res.end(data);
   });
 });
+
+/******************************************************************************
+ * Done ... Show startup messsage
+ ******************************************************************************/
 
 log.info("Server started at: http://"+IP+":"+PORT+
                             ", ws://"+IP+":"+PORT+"/socket.io");
