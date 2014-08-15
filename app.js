@@ -14,7 +14,7 @@ var IP    = '127.0.0.1';
 var DB    = 'http://localhost:7474/db/data/';
 
 // I only wanna see INFO and upwards
-log.setLevel(log4js.levels.INFO);
+log.setLevel(log4js.levels.DEBUG);
 
 // Look for environment settings
 if ( process.env.PORT !== "" ) {
@@ -57,6 +57,16 @@ io.on('connection', function(socket) {
     socket.emit('views'); 
   });
   
+  /**
+   * Got a nodes request
+   *
+   * Get the data and send it back to client
+   **/
+  socket.on('viewNetworkHamburg', function(){ 
+    log.debug('Got request: viewNetworkHamburg');        // Just a debug message
+    socket.emit('viewNetworkHamburg');           // Send the data back to client
+  });
+
   /**
    * Got a nodes request
    *

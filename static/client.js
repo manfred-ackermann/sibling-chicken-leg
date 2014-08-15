@@ -1,9 +1,13 @@
-// creating a new websocket
+// creating a new websocket connection
 var socket = io.connect();
 
-// Send and log id of every link clicked
+// Send request and log id of every link clicked
 $('a').click( function (event) { 
-  $('#alert').html("Requesting: "+event.target.id);
+  // TODO: $('a').setProperty("class","inactive");
+  //       $('#'+event.target.id).setProperty("class","active");
+  $('li').removeClass('active');
+  $('#'+event.target.id).addClass('active');
+  $('#alert').html("Request send...");
   $('#container').html( "" );
   socket.emit(event.target.id);
   console.log("Requested: "+event.target.id);
@@ -11,12 +15,27 @@ $('a').click( function (event) {
 
 // React on server message
 socket.on('home', function () {
-  $('#alert').html("Please select a menu entry...");
+  //$('#alert').html("<p>xxx</p><p>Please select a menu entry...</p>");
+  $('#container').html( jade.render( tpl.HOME() ) );
+  $('#home').addClass('active');
+  $('#alert').html("Welcome.");
 });
 
 // React on server message
 socket.on('views', function () {
   $('#alert').html("Select a view please.");
+});
+
+// React on server message
+socket.on('viewNetworkHamburg', function () {
+  console.log("Got viewNetworkHamburg response from server.");
+  $('#alert').html("Network Hamburg - Last update: "+String(new Date()));
+  $('#container').html( '<div id="chart"></div>' );
+  
+  var root = d3.select('#chart').append('svg')
+      .attr('width', 200)
+      .attr('height', 200)
+      .style('border', '1px solid black');
 });
 
 // React on server message
@@ -28,7 +47,7 @@ socket.on('nodesData', function (data) {
   //$('#container').html("Nodes confirmed by server."+JSON.stringify(data, null, 1 ));
   //$('#container').html(jade.compileClient('p TEST', {'filename':'/jade/nodes.jade'}));
   $('#alert').html("Got "+data.length+" nodes.");
-  $('#container').html( jade.render( jade_nodes.join('\n'), {data: data} ) );
+  $('#container').html( jade.render( tpl.NODES_TABLE(), {data: data} ) );
 });
 
 // React on server message

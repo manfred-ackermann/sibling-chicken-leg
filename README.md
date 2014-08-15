@@ -51,6 +51,11 @@ DB="http://user:pass@neo4j.somewhere.tld:7474/db/data/" nodejs app.js
 
 ## History
 
+2014.08.15 - Got the jade template renderer included in a helpful maner, broke
+             thinks up into reasonable pieces, included a better logging, worked
+             on message handling and interactionand finally D3 painted the first
+             square.
+
 2014.08.11 - Requested data from db by cypher and when delivered it to clients
              web frontend by using websockets. Also cleaned up logging a bit.
              Have to thought about propper logging.
