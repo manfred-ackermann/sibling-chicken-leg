@@ -6,6 +6,7 @@ var fs      = require('fs');
 var neo4j   = require('neo4j-js');
 var log4js  = require('log4js');
 var log     = log4js.getLogger('appl');
+var queries = require('./static/snippets_queries');
 
 // Defaults (can be overwriten bei environment vars)
 var PORT  = '8080';
@@ -83,7 +84,7 @@ io.on('connection', function(socket) {
       ];
   
       // ASYNC do the query
-      graph.query(query.join('\n'),  function (err, results) {
+      graph.query(queries.all_nodes,  function (err, results) {
         if (err) {
           // Sonething went wrong
           log.error(err);
