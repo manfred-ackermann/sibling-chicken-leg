@@ -51,6 +51,11 @@ DB="http://user:pass@neo4j.somewhere.tld:7474/db/data/" nodejs app.js
 
 ## History
 
+2014.08.21 - Got stuck on asking the right questions the right way to the neo4j
+             grah db and using d3 the right way. On 3d I got a clue how to use
+             the force design but still I need the right data first. Also I have
+             to create the right test data and a update data worker.
+
 2014.08.15 - Got the jade template renderer included in a helpful maner, broke
              thinks up into reasonable pieces, included a better logging, worked
              on message handling and interaction and finally D3 painted the
