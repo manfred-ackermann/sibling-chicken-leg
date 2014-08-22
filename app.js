@@ -6,7 +6,7 @@ var fs      = require('fs');
 var neo4j   = require('neo4j-js');
 var log4js  = require('log4js');
 var log     = log4js.getLogger('appl');
-var queries = require('./static/queries');
+var q       = require('./static/queries');
 
 // Defaults (can be overwriten bei environment vars)
 var PORT  = '8080';
@@ -14,7 +14,7 @@ var IP    = '127.0.0.1';
 var DB    = 'http://localhost:7474/db/data/';
 
 // I only wanna see INFO and upwards
-log.setLevel(log4js.levels.DEBUG);
+log.setLevel(log4js.levels.INFO);
 
 // Look for environment settings
 if ( process.env.PORT !== "" ) {
@@ -34,6 +34,14 @@ if ( process.env.DB   !== "" ) {
 }
 
 server.listen(PORT, IP);
+
+var graph;
+
+neo4j.connect(DB, function (err, agraph) {               // Get a DB connection
+  if (err) { log.fatal(err); throw err; }                // Something went wrong
+  log.debug('Connected to DB: '+DB);                     // Just a debug message
+  graph = agraph;
+});
 
 /******************************************************************************
  * WEBSOCKETS Message Handling
@@ -64,7 +72,14 @@ io.on('connection', function(socket) {
    **/
   socket.on('viewNetworkHamburg', function(){ 
     log.debug('Got request: viewNetworkHamburg');        // Just a debug message
-    socket.emit('viewNetworkHamburg');           // Send the data back to client
+    graph.query(q.test_query(), function (err, res) {       // ASYNC do t. query
+      if (err) { log.error(err); }                       // Something went wrong
+      else {
+        log.debug(JSON.stringify(res, null, 1 ));
+        log.info("Got "+res.length+" obj as res. on viewNetworkHamburg req.");
+        socket.emit('viewNetworkHamburg',res);   // Send the data back to client
+      }
+    });
   });
 
   /**
@@ -74,19 +89,13 @@ io.on('connection', function(socket) {
    **/
   socket.on('nodes', function(){ 
     log.debug('Got request: nodes');                     // Just a debug message
-    neo4j.connect(DB, function (err, graph) {                // ASYNC connect DB
-      if (err) { log.fatal(err); throw err;              // Something went wrong
+    graph.query(q.all_nodes(), function (err, res) {       // ASYNC do the query
+      if (err) { log.error(err); }                       // Something went wrong
+      else {
+        log.debug(JSON.stringify(res, null, 1 ));
+        log.info("Got "+res.length+" nodes as results on nodes request.");
+        socket.emit('nodesData',res);            // Send the data back to client
       }
-      log.debug('Connected to DB: '+DB);                 // Just a debug message
-      graph.query(queries.all_nodes, function (err, res) { // ASYNC do the query
-        if (err) { log.error(err);                       // Something went wrong
-        } else {
-          //console.log(JSON.stringify(results, null, 1 ));
-          //console.log("Got result id:"+results[0].n.id);
-          log.info("Got "+res.length+" nodes as results on nodes request.");
-          socket.emit('nodesData',res);          // Send the data back to client
-        }
-      });
     });
   });
   
