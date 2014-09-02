@@ -14,12 +14,23 @@ var tpl = {
     return join2str( [
       '#row.row: #col-md-12.col-md-12: #panel-body.panel-body',
       ' #chart.chart'
-  ]);},
+    ]);
+  },
+  
+  /* Graph Network Hamburg
+   *****************************
+   */
+  D3_STUB: function () {
+    return join2str( [
+      '#row.row: #col-md-12.col-md-12: #panel-body.panel-body',
+      ' #chart.chart'
+    ]);
+  },
   
   /* Table of nodes with details
    *****************************
    * Context: (JSON) data{
-   *                       n:{ id:,
+   *                       nodes:{ id:,
    *                           data: { name:,
    *                                   ip_addr:,
    *                                   operation_system }
@@ -39,11 +50,12 @@ var tpl = {
       '  tbody',
       '  - each val in data',
       '    tr',
-      '     td= val.n.id',
-      '     td= val.n.data.name',
-      '     td= val.n.data.ip_addr',
-      '     td= val.n.data.operation_system'
-  ]);},
+      '     td= val.nodes.id',
+      '     td= val.nodes.data.name',
+      '     td= val.nodes.data.ip_addr',
+      '     td= val.nodes.data.operation_system'
+    ]);
+  },
 
   /* Home Screen
    *************

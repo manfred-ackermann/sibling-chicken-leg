@@ -1,9 +1,9 @@
 /* Get all Nodes
  ***********************/
 function all_nodes() {
-  return 'MATCH (n)'+
-//         ' WHERE n.name="vhead0"'+
-         ' RETURN n'
+  return 'MATCH (nodes)'+
+//         ' WHERE nodes.name="vhead0"'+
+         ' RETURN nodes'
 };
 
 /* Get simple result (Test Query)

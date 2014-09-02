@@ -77,9 +77,54 @@ io.on('connection', function(socket) {
       else {
         log.debug(JSON.stringify(res, null, 1 ));
         log.info("Got "+res.length+" obj as res. on viewNetworkHamburg req.");
-        socket.emit('viewNetworkHamburg',res);   // Send the data back to client
+        
+        var dataset = {
+          nodes: [
+            { index: 0, name: "Myriel" },
+            { index: 1, name: "Acki" },
+            { index: 2, name: "Napoleon" },
+            { index: 3, name: "Ping" },
+            { index: 4, name: "Pong" },
+            { index: 5, name: "Ping" },
+            { index: 6, name: "Pong" },
+          ],
+          edges: [
+            { source: 1,target: 0 },
+            { source: 1,target: 2 },
+            { source: 2,target: 0 },
+            { source: 0,target: 3 },
+            { source: 0,target: 4 },
+            { source: 4,target: 5 },
+            { source: 4,target: 6 },
+          ]
+        };
+
+        socket.emit('viewNetworkHamburg',dataset);   // Send the data back to client
       }
     });
+  });
+
+  /**
+   * Got a nodes request
+   *
+   * Get the data and send it back to client
+   **/
+  socket.on('testForceLayout', function(){ 
+    log.debug('Got request: testForceLayout');           // Just a debug message
+    log.info("Sending test dataset for testForceLayout req.");
+    var dataset = {
+      nodes: [
+        { name: "Myriel" },
+        { name: "Acki" },
+        { name: "Napoleon" },
+      ],
+      edges: [
+        { source: 1,target: 0 },
+        { source: 1,target: 2 },
+        { source: 0,target: 2 },
+      ]
+    };
+    socket.emit('testForceLayout',dataset);      // Send the data back to client
   });
 
   /**
