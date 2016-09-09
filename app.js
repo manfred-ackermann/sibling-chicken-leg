@@ -1,187 +1,179 @@
-var express = require('express');
-var app     = express();
-var server  = require('http').Server(app);
-var io      = require('socket.io')(server);
-var fs      = require('fs');
-var neo4j   = require('neo4j-js');
-var log4js  = require('log4js');
-var log     = log4js.getLogger('appl');
-var q       = require('./static/queries');
+var express = require('express'),
+    app     = express(),
+    server  = require('http').Server(app),
+    io      = require('socket.io')(server),
+    fs      = require('fs'),
+    pug     = require('pug'),
+    log4js  = require('log4js'),
+    log     = log4js.getLogger('appl');
 
-// Defaults (can be overwriten bei environment vars)
-var PORT  = '8080';
-var IP    = '127.0.0.1';
-var DB    = 'http://localhost:7474/db/data/';
+// Defaults (can be overwritten bei environment vars)
+const PORT = '8080',
+      IP   = '127.0.0.1';
+
+// MessageTypes enum
+const MTYPE = {
+  CLICKEVENT : {value: 0, name: "clickevent"},
+  CONTENT    : {value: 1, name: "content"}
+};
 
 // I only wanna see INFO and upwards
-log.setLevel(log4js.levels.INFO);
+logLevel = log4js.levels.DEBUG;
+log.setLevel(logLevel);
 
 // Look for environment settings
-if ( process.env.PORT !== "" ) {
-  PORT = process.env.PORT; log.info("Set app to listen on PORT: "+ PORT);
+if (process.env.PORT !== undefined) {
+    PORT = process.env.PORT;
+    log.info("Set app to listen on PORT: " + PORT);
 } else {
-  log.info("Set environment PORT to set listen port. Default is: "+ PORT);
+    log.info("Set environment PORT to set listen port. Default is: " + PORT);
 }
-if ( process.env.IP   !== "" ) {
-  IP = process.env.IP; log.info("Set app to listen on IP: "+ IP);
+if (process.env.IP !== undefined) {
+    IP = process.env.IP;
+    log.info("Set app to listen on IP  : " + IP);
 } else {
-  log.info("Set environment IP to set listen address. Default is: "+ IP);
-}
-if ( process.env.DB   !== "" ) { 
-  DB = process.env.DB; log.info("Set app to use DB: "+ DB);
-} else {
-  log.info("Set environment DB to set Neo4j URL. Default is: "+ DB);
+    log.info("Set environment IP to set listen address. Default is: " + IP);
 }
 
 server.listen(PORT, IP);
 
-var graph;
-
-neo4j.connect(DB, function (err, agraph) {               // Get a DB connection
-  if (err) { log.fatal(err); throw err; }                // Something went wrong
-  log.debug('Connected to DB: '+DB);                     // Just a debug message
-  graph = agraph;
-});
+/******************************************************************************
+ * Prepare pug template cache
+ ******************************************************************************/
+var template_cache = {};
+template_cache['error404'] = fs.readFileSync('static/template/error404.pug');
 
 /******************************************************************************
- * WEBSOCKETS Message Handling
+ * Prepare client session registry
  ******************************************************************************/
+const session_registry = new Array;
 
-// creating a new websocket to keep the content updated
-io.on('connection', function(socket) {
-  log.debug("User connected.");
+/******************************************************************************
+ * WEBSOCKETS Client Message Handling
+ ******************************************************************************/
+io.on('connection', function (socket) {
+    var template;
 
-  socket.emit('home');
+    log.debug("New connection.");
 
-  socket.on('disconnect', function(){ log.debug('User disconnected'); });
-  
-  socket.on('home', function(){ 
-    log.debug('Got request: home');
-    socket.emit('home');
-  });
-  
-  socket.on('views', function(){ 
-    log.debug('Got request: views');
-    socket.emit('views'); 
-  });
-  
-  /**
-   * Got a nodes request
-   *
-   * Get the data and send it back to client
-   **/
-  socket.on('viewNetworkHamburg', function(){ 
-    log.debug('Got request: viewNetworkHamburg');        // Just a debug message
-    graph.query(q.test_query(), function (err, res) {       // ASYNC do t. query
-      if (err) { log.error(err); }                       // Something went wrong
-      else {
-        log.debug(JSON.stringify(res, null, 1 ));
-        log.info("Got "+res.length+" obj as res. on viewNetworkHamburg req.");
-        
-        var dataset = {
-          nodes: [
-            { index: 0, name: "Myriel" },
-            { index: 1, name: "Acki" },
-            { index: 2, name: "Napoleon" },
-            { index: 3, name: "Ping" },
-            { index: 4, name: "Pong" },
-            { index: 5, name: "Ping" },
-            { index: 6, name: "Pong" },
-          ],
-          edges: [
-            { source: 1,target: 0 },
-            { source: 1,target: 2 },
-            { source: 2,target: 0 },
-            { source: 0,target: 3 },
-            { source: 0,target: 4 },
-            { source: 4,target: 5 },
-            { source: 4,target: 6 },
-          ]
-        };
+    // Got HELO (Handshake part 1) from client
+    // Will emit HELLO with timestamp and register clientId
+    socket.on('helo', function (data) {
+        log.debug('HELO from '+socket.id);
+        socket.emit('hello',{ ticks:     Date.now(),             // timestamp
+                              clientUID: socket.id,              // unique ID
+                              mtypes:    JSON.stringify( MTYPE ) // config
+                            });
+        session_registry.push(socket.id);
+        log.debug(session_registry.length + ' clients connected.');
+//        session_registry.forEach(function (client, index, object) {
+//          log.debug('#' + index + ': ' + client);
+//        });
+    });
 
-        socket.emit('viewNetworkHamburg',dataset);   // Send the data back to client
+    // Got DISCONNECT for client
+    // Will deregister clientId
+    socket.on('disconnect', function () {
+        log.debug('Client '+socket.id+' disconnected');
+        session_registry.splice(session_registry.indexOf(socket.id), 1);
+//        for (var key in session_registry) {
+//          if (session_registry.hasOwnProperty(key)) {
+//            log.debug('key is: ' + key + ', value is: ' + session_registry[key]);
+//          }
+//        }
+    });
+
+    // Got MESSAGE
+    socket.on('message', function (data) {
+      if (typeof data.type === 'undefined' || data.type === null)
+      {
+        log('MISSING MESSAGETYPE from '+socket.id);
+      }
+      else
+      {
+        switch (data.type.value)
+        {
+          case MTYPE.CLICKEVENT.value:
+            handleClickevent(socket, data);
+            break;
+
+          default:
+            log.debug('MESSAGE from '+socket.id+' w/ unknown type : '+data.type.name);
+            break;
+        }
       }
     });
-  });
 
-  /**
-   * Got a nodes request
-   *
-   * Get the data and send it back to client
-   **/
-  socket.on('testForceLayout', function(){ 
-    log.debug('Got request: testForceLayout');           // Just a debug message
-    log.info("Sending test dataset for testForceLayout req.");
-    var dataset = {
-      nodes: [
-        { name: "Myriel" },
-        { name: "Acki" },
-        { name: "Napoleon" },
-      ],
-      edges: [
-        { source: 1,target: 0 },
-        { source: 1,target: 2 },
-        { source: 0,target: 2 },
-      ]
-    };
-    socket.emit('testForceLayout',dataset);      // Send the data back to client
-  });
-
-  /**
-   * Got a nodes request
-   *
-   * Get the data and send it back to client
-   **/
-  socket.on('nodes', function(){ 
-    log.debug('Got request: nodes');                     // Just a debug message
-    graph.query(q.all_nodes(), function (err, res) {       // ASYNC do the query
-      if (err) { log.error(err); }                       // Something went wrong
-      else {
-        log.debug(JSON.stringify(res, null, 1 ));
-        log.info("Got "+res.length+" nodes as results on nodes request.");
-        socket.emit('nodesData',res);            // Send the data back to client
-      }
-    });
-  });
-  
-  /**
-   * Got a relations request
-   *
-   * Send confirmation back to client
-   **/
-  socket.on('relations',  function(){
-    log.debug('Got request: relations');
-    socket.emit('relationsData');
-  });
-
-  /**
-   * Do something regulary
-   *
-   * Send whatever to client
-   **/
-//  setTimeout(function() {}, 10);(function() {
-//    var msg  = JSON.stringify( {app:{hello:"Please wait ..."}} );
-//    socket.volatile.emit('welcome', msg); 
-//  }, 500);
-  
 });
+
+function handleClickevent(socket, data) {
+  log.debug( data.type.name.toUpperCase()+' from '+socket.id+' source: '+data.source);
+
+  switch (data.source)
+  {
+    case 'home':
+    case 'oooops':
+    case 'action':
+    case 'c-a1':
+    case 'c-a2':
+    case 'c-b1':
+      data.target = 'container';
+      sendContent(socket, data);
+      break;
+
+    default:
+      log.debug('MESSAGE from '+socket.id+' w/ unknown source : '+data.source);
+      break;
+  }
+}
+
+function sendContent(socket, data) {
+  data.content = renderTemplate( data );
+  sendRawContent(socket, data)
+}
+
+function renderTemplate( data ) {
+  // Get template from cache or load and store in cache
+  template = template_cache[data.source];
+  if(typeof template === 'undefined' || template === null) {
+      try {
+          template = fs.readFileSync('static/template/'+data.source+'.pug');
+          if( logLevel !== log4js.levels.DEBUG ) {
+              template_cache[data.source] = template;
+          }
+      } catch (e) {
+          template = template_cache['error404'];
+      }
+  }
+  return pug.render( template, { data: data } );
+}
+
+function sendRawContent(socket, data) {
+  socket.emit('message',{ ticks:  Date.now(),
+                          type:   MTYPE.CONTENT,
+                          origin: 'server',
+                          target:  data.target,
+                          content: data.content
+                        });
+}
+
+/******************************************************************************
+ * Connect Log4js logger to Express
+ ******************************************************************************/
+app.use(log4js.connectLogger(log4js.getLogger("http"), {
+    level: log4js.levels.INFO,
+    format: ':remote-addr :method ":url" "HTTP/:http-version" :status'
+}));
 
 /******************************************************************************
  * HTTP Request Handling
  ******************************************************************************/
-
-// Connect Log4js logger to Express
-app.use(log4js.connectLogger( log4js.getLogger("http"), { 
-  level: log4js.levels.INFO,
-  format: ':remote-addr :method :url HTTP/:http-version :status' 
-}));
-
 app.use("/static", express.static(__dirname + '/static'));
-app.get('/', function (req, res) { res.redirect('/static/app.html')});
+app.get('/', function (req, res) {
+    res.redirect('/static/app.html')
+});
 
 /******************************************************************************
  * Done ... Show startup messsage
  ******************************************************************************/
-
-log.info("Server started at: http://"+IP+":"+PORT+
-                            ", ws://"+IP+":"+PORT+"/socket.io");
+log.info("Server started at: http://" + IP + ":" + PORT);

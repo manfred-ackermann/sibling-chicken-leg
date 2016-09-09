@@ -1,0 +1,7 @@
+//- static/template/error404.pug
+p.error: em Uh oh, that page couldn't be found.
+p.error: small source: #{data.source} target: #{data.target}
+p Reason A: We Broke Something.
+p Reason B: You Can't Type
+p: small Hint: change this message in static/template/error404.pug
+p: small Hint: we tried to load static/template/#{data.source}.pug
