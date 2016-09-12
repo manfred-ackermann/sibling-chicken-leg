@@ -5,7 +5,8 @@ var express = require('express'),
     fs      = require('fs'),
     pug     = require('pug'),
     log4js  = require('log4js'),
-    log     = log4js.getLogger('appl');
+    log     = log4js.getLogger('appl'),
+    eRouter = require('./eventRouter');
 
 // Defaults (can be overwritten bei environment vars)
 const PORT = '8080',
@@ -20,6 +21,8 @@ const MTYPE = {
 // I only wanna see INFO and upwards
 logLevel = log4js.levels.DEBUG;
 log.setLevel(logLevel);
+
+eRouter.hello();
 
 // Look for environment settings
 if (process.env.PORT !== undefined) {
@@ -69,6 +72,11 @@ io.on('connection', function (socket) {
 //        session_registry.forEach(function (client, index, object) {
 //          log.debug('#' + index + ': ' + client);
 //        });
+
+        // Send the home page as welcome content
+        data.source = 'home';
+        data.target = 'container';
+        sendContent(socket, data);
     });
 
     // Got DISCONNECT for client
