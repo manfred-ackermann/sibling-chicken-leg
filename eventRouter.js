@@ -1,15 +1,18 @@
 // router factory
 const router = () => {
 
-  //const sound = 'eventRouter ready to use...'
+  var logger
   const routes = {}
 
   return {
     hello: () => {
-      console.log( 'Hello' )
+      logger.info('Hello')
     },
     add: (event,handler) => {
       // fsdj
+    },
+    addLogger: (aLogger) => {
+      logger = aLogger
     }
   }
 
