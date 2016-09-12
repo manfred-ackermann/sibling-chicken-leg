@@ -22,9 +22,9 @@ const MTYPE = {
 logLevel = log4js.levels.DEBUG;
 log.setLevel(logLevel);
 
-eRouter.addLogger(log);
-eRouter.hello();
-//eRouter.add(anEvent,aHandler);
+eRouter.setLogger(log);
+eRouter.add('click','aHandler');
+eRouter.logStatus();
 
 // Look for environment settings
 if (process.env.PORT !== undefined) {

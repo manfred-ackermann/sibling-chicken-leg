@@ -5,13 +5,14 @@ const router = () => {
   const routes = {}
 
   return {
-    hello: () => {
-      logger.info('Hello')
+    logStatus: () => {
+      logger.debug('Registry: '+JSON.stringify(routes))
     },
     add: (event,handler) => {
       // fsdj
+      routes[event] = handler
     },
-    addLogger: (aLogger) => {
+    setLogger: (aLogger) => {
       logger = aLogger
     }
   }
