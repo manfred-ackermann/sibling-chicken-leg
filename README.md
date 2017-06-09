@@ -1,9 +1,11 @@
 # sibling-chicken-leg
 
 
-Just another try to setup a senseful working environment to build a system that
+-Just another try to setup a senseful working environment to build a system that
 has a Neo4j Graph Database as data sink and node.js as middleware to interface
-with humans using a html-interface to
+with humans using a html-interface to-
+
+Start with a framework
 
 *show the actual network and application situasion so
 it's helpful to identify problems and their source*
@@ -11,11 +13,7 @@ it's helpful to identify problems and their source*
 On the node.js side the following extensions are identified to do the job:
 - GitHub [strongloop/express](//github.com/strongloop/express) (Web Development Framework)
 - GitHub [Automattic/socket.io](//github.com/Automattic/socket.io) (Realtime application framework)
-- GitHub [caolan/async](//github.com/caolan/async) (Async utilities for node and the browser) **unused atm**
-- GitHub [bretcope/neo4j-js](//github.com/bretcope/neo4j-js) (client library for accessing neo4j databases)
-- GitHub [mbostock/d3](//github.com/mbostock/d3) (A JavaScript visualization library for HTML and SVG)
 - GitHub [nomiddlename/log4js-node](//github.com/nomiddlename/log4js-node) (log4js logger middleware)
-- GitHub [visionmedia/jade](//github.com/visionmedia/jade) (robust, elegant, feature rich template engine)
 
 and last but not least Bootstrap. The IDE I use is [Cloud9](//c9.io)
 
@@ -35,18 +33,10 @@ npm install
 
 ## Usage
 
-If you have a default Neo4j Graph DB reacting to http://localhost:7474/db/data/
-installed just start the app and direct your browser to http://127.0.0.1:8080.
+Just start the app and direct your browser to http://127.0.0.1:8080.
 
 ```bash
 nodejs app.js
-```
-
-In case you access Neo4j on another host set the environment variable DB to
-point to Neo4j.
-
-```bash
-DB="http://user:pass@neo4j.somewhere.tld:7474/db/data/" nodejs app.js
 ```
 
 ## History

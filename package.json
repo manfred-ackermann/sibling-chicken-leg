@@ -1,13 +1,8 @@
 {
-  "name": "sibling-chicken-leg",
+  "name": "nodejs-websocket-basic-framework",
   "version": "0.0.1",
-  "description": "node.js realtime network monitor",
+  "description": "node.js basic websocket framework",
   "keywords": [
-    "realtime",
-    "network",
-    "monitor",
-    "neo4j",
-    "d3",
     "socket",
     "io"
   ],
@@ -23,7 +18,6 @@
   ],
   "dependencies": {
     "express": "^4.7.3",
-    "pug": "2.0.0-beta6",
     "socket.io": "^1.0.6",
     "log4js": "^0.6.16"
   }
