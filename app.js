@@ -11,7 +11,7 @@ const PORT = '8081',
       IP   = '127.0.0.1';
 
 // I only wanna see INFO and upwards
-logLevel = log4js.levels.DEBUG;
+const logLevel = log4js.levels.DEBUG;
 log.setLevel(logLevel);
 
 // Look for environment settings
